@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tablet_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    tools:context=".IngredientsAndStepsActivity">
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ingredients_and_steps_fragment"
+    android:layout_height="match_parent"
+    android:layout_width="400dp"
+    android:name="com.secondfloorapps.bakingapp.fragments.Fragment_Ingredients_And_Steps"/>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"/>
+
+    <LinearLayout
+        android:id="@+id/video_and_step_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="top"
+        android:orientation="vertical">
+
+        <!--<FrameLayout-->
+            <!--android:id="@+id/stepInstructions_container"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="top"-->
+            <!--android:scaleType="fitXY" />-->
+
+
+    </LinearLayout>
+
+</LinearLayout>

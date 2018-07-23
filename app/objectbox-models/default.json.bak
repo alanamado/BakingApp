@@ -1,0 +1,152 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:5066718219800250375",
+      "lastPropertyId": "7:1698193815834420799",
+      "name": "Ingredient",
+      "properties": [
+        {
+          "id": "1:1475536480634589215",
+          "name": "quantity"
+        },
+        {
+          "id": "2:9030524840757309694",
+          "name": "measure"
+        },
+        {
+          "id": "3:5656501946064328580",
+          "name": "ingredient"
+        },
+        {
+          "id": "4:8834795913232657988",
+          "name": "recipeId"
+        },
+        {
+          "id": "7:1698193815834420799",
+          "name": "uniqueId"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:8288464240713234994",
+      "lastPropertyId": "5:2091770574394877610",
+      "name": "Recipe",
+      "properties": [
+        {
+          "id": "1:7288498047894764203",
+          "name": "id"
+        },
+        {
+          "id": "2:7793712064807035582",
+          "name": "name"
+        },
+        {
+          "id": "3:235274205627436467",
+          "name": "recipeID"
+        },
+        {
+          "id": "4:2862917369923316270",
+          "name": "servings"
+        },
+        {
+          "id": "5:2091770574394877610",
+          "name": "image"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:6665464121395177428",
+      "lastPropertyId": "8:1841081313182574955",
+      "name": "Step",
+      "properties": [
+        {
+          "id": "1:230725027788969800",
+          "name": "id"
+        },
+        {
+          "id": "2:5177885194035934872",
+          "name": "shortDescription"
+        },
+        {
+          "id": "3:8941280069327215682",
+          "name": "description"
+        },
+        {
+          "id": "4:4459834784166474720",
+          "name": "videoURL"
+        },
+        {
+          "id": "5:2153575313854294702",
+          "name": "thumbnailURL"
+        },
+        {
+          "id": "6:5465558513803959406",
+          "indexId": "2:5496453860409783056",
+          "name": "recipeId"
+        },
+        {
+          "id": "8:1841081313182574955",
+          "name": "uniqueId"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "5:4499272656396730834",
+      "lastPropertyId": "5:462739990898070649",
+      "name": "Widget",
+      "properties": [
+        {
+          "id": "2:245218858724489429",
+          "name": "recipeID"
+        },
+        {
+          "id": "3:2538335045333550125",
+          "name": "lastTouched"
+        },
+        {
+          "id": "4:6170259693714536404",
+          "name": "widgetId"
+        },
+        {
+          "id": "5:462739990898070649",
+          "name": "uniqueId"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "5:4499272656396730834",
+  "lastIndexId": "4:7605653593865937359",
+  "lastRelationId": "2:273836187347463668",
+  "lastSequenceId": "0:0",
+  "modelVersion": 4,
+  "modelVersionParserMinimum": 4,
+  "retiredEntityUids": [
+    2757060273256005188
+  ],
+  "retiredIndexUids": [
+    8412805870051129986,
+    2392717041685076691,
+    7605653593865937359
+  ],
+  "retiredPropertyUids": [
+    2722069326264754368,
+    4811367316639562117,
+    3423437629360682295,
+    1020351782603879447,
+    1301481740731043621,
+    2874978019841701409,
+    2739300196395736284
+  ],
+  "retiredRelationUids": [
+    2337603102876391023,
+    273836187347463668
+  ],
+  "version": 1
+}

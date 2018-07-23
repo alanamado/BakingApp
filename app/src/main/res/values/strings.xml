@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">BakingApp</string>
+    <string name="appwidget_text">EXAMPLE2</string>
+    <string name="add_widget">Add widget</string>
+    <string name="dowload_recipes">Refresh Recipes</string>
+    <string name="choose_the_recipe_you_want_to_display">Choose the recipe you want to display</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="steps">Steps</string>
+    <string name="instructions">Instructions</string>
+    <string name="recipe_name">Click Here</string>
+</resources>
