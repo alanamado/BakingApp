@@ -9,11 +9,18 @@
     android:orientation="horizontal"
     tools:context=".IngredientsAndStepsActivity">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ingredients_and_steps_fragment"
-    android:layout_height="match_parent"
-    android:layout_width="400dp"
-    android:name="com.secondfloorapps.bakingapp.fragments.Fragment_Ingredients_And_Steps"/>
+    <LinearLayout
+        android:id="@+id/ingredients_and_steps_container"
+        android:layout_width="400dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        />
+
+    <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/ingredients_and_steps_fragment"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_width="400dp"-->
+    <!--android:name="com.secondfloorapps.bakingapp.fragments.IngredientsAndStepsFragment"/>-->
 
     <View
         android:layout_width="1dp"
@@ -27,12 +34,6 @@
         android:layout_gravity="top"
         android:orientation="vertical">
 
-        <!--<FrameLayout-->
-            <!--android:id="@+id/stepInstructions_container"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="top"-->
-            <!--android:scaleType="fitXY" />-->
 
 
     </LinearLayout>

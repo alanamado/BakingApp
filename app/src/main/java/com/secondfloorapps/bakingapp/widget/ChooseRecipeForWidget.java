@@ -7,25 +7,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.secondfloorapps.bakingapp.MyApp;
 import com.secondfloorapps.bakingapp.R;
-import com.secondfloorapps.bakingapp.adapters.adapter_recycler_recipe_list_for_widget;
-import com.secondfloorapps.bakingapp.interfaces.interface_widget_recipe_chooser;
+import com.secondfloorapps.bakingapp.adapters.RecyclerRecipeListForWidgetAdapter;
+import com.secondfloorapps.bakingapp.interfaces.WidgetRecipeChooserInterface;
 import com.secondfloorapps.bakingapp.models.Recipe;
 
 import java.util.List;
 
 import io.objectbox.BoxStore;
 
-public class ChooseRecipeForWidgetActivity extends AppCompatActivity  implements interface_widget_recipe_chooser {
+public class ChooseRecipeForWidget extends AppCompatActivity  implements WidgetRecipeChooserInterface {
 
     private final Context context = this;
     private int widgetId;
-    private adapter_recycler_recipe_list_for_widget adapter;
+    private RecyclerRecipeListForWidgetAdapter adapter;
     private RecyclerView recyclerView;
 
     @Override
@@ -61,7 +58,7 @@ public class ChooseRecipeForWidgetActivity extends AppCompatActivity  implements
         //---------------------------------------------------------
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new adapter_recycler_recipe_list_for_widget(this,widgetId, recipeList);
+        adapter = new RecyclerRecipeListForWidgetAdapter(this,widgetId, recipeList);
         recyclerView.setAdapter(adapter);
 
     }

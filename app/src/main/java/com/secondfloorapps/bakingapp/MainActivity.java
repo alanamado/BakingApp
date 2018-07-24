@@ -5,10 +5,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.secondfloorapps.bakingapp.fragments.Fragment_RecipesList;
+import com.secondfloorapps.bakingapp.fragments.RecipesListFragment;
 import com.secondfloorapps.bakingapp.models.Ingredient;
 import com.secondfloorapps.bakingapp.models.Recipe;
 import com.secondfloorapps.bakingapp.models.Step;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i("ActivityLaunch", "MainActivity");
         setContentView(R.layout.activity_main);
 
         //---------------------------------
@@ -172,20 +174,20 @@ public class MainActivity extends AppCompatActivity {
         // Set up the Fragment Manager..
         //--------------------------------------------------------------------
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment_RecipesList fragment_recipesList = new Fragment_RecipesList();
+        RecipesListFragment recipesListFragment = new RecipesListFragment();
 
         //--------------------------------------------------------------------
         // Load the fragment into the layout..
         //--------------------------------------------------------------------
-        Fragment_RecipesList existingFragment = (Fragment_RecipesList) fragmentManager.findFragmentByTag("recipeList");
+        RecipesListFragment existingFragment = (RecipesListFragment) fragmentManager.findFragmentByTag("recipeList");
 
         if (existingFragment != null){
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment_recipesList, "recipeList")
+                    .replace(R.id.fragment_container, recipesListFragment, "recipeList")
                     .commit();
         }else{
             fragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, fragment_recipesList, "recipeList")
+                    .add(R.id.fragment_container, recipesListFragment, "recipeList")
                     .commit();
         }
     }

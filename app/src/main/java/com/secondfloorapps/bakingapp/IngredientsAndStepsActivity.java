@@ -5,30 +5,48 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-import com.secondfloorapps.bakingapp.fragments.Fragment_Ingredients_And_Steps;
-import com.secondfloorapps.bakingapp.fragments.Fragment_Step_Instructions;
-import com.secondfloorapps.bakingapp.models.Recipe;
+
+import com.secondfloorapps.bakingapp.fragments.IngredientsAndStepsFragment;
+import com.secondfloorapps.bakingapp.fragments.StepInstructionsFragment;
+import com.secondfloorapps.bakingapp.models.IngredientParcelable;
 import com.secondfloorapps.bakingapp.models.Step;
 import com.secondfloorapps.bakingapp.models.Step_;
-import com.secondfloorapps.bakingapp.models.Step_parc;
+import com.secondfloorapps.bakingapp.models.StepParcelable;
 
 
+import java.util.ArrayList;
+import java.util.List;
 
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
-public class IngredientsAndStepsActivity extends AppCompatActivity implements Fragment_Ingredients_And_Steps.OnStepClickListener {
+public class IngredientsAndStepsActivity extends AppCompatActivity implements IngredientsAndStepsFragment.OnStepClickListener {
 
     private boolean mTwoPane;
     private LinearLayout step_container;
     BoxStore boxStore;
+    String mRecipeName;
+    ArrayList<IngredientParcelable> mIngredientsList;
+    ArrayList<StepParcelable> mStepsList;
+    IngredientsAndStepsFragment ingredientsAndStepsFragment;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("RecipeName",mRecipeName);
+        outState.putParcelableArrayList("Ingredients", mIngredientsList);
+        outState.putParcelableArrayList("Steps",mStepsList);
+     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i("ActivityLaunch", "IngredientsAndStepsActivity");
         setContentView(R.layout.activity_ingredients_and_steps);
+       // ingredientsAndStepsFragment_Container = findViewById(R.id.IngredientsAndSteps_Container);
 
         MyApp myApp = (MyApp) this.getApplicationContext();
         boxStore = myApp.getBoxStore();
@@ -36,6 +54,7 @@ public class IngredientsAndStepsActivity extends AppCompatActivity implements Fr
         if (findViewById(R.id.video_and_step_container) != null) {
             mTwoPane = true;
             step_container = findViewById(R.id.video_and_step_container);
+
          //   Toast.makeText(this,"In tablet layout",Toast.LENGTH_SHORT).show();
 
         }else
@@ -43,11 +62,60 @@ public class IngredientsAndStepsActivity extends AppCompatActivity implements Fr
             mTwoPane = false;
           //  Toast.makeText(this,"In phone layout",Toast.LENGTH_SHORT).show();
         }
+
+        //-------------------------------------
+        // get intent extras
+        //------------------------------------
+        if (savedInstanceState !=null) {
+            mRecipeName = savedInstanceState.getString("RecipeName");
+            mIngredientsList = savedInstanceState.getParcelableArrayList("Ingredients");
+            mStepsList = savedInstanceState.getParcelableArrayList("Steps");
+        }else
+        {
+            Bundle bundle = getIntent().getExtras();
+            mRecipeName = bundle.getString("RecipeName");
+            mIngredientsList = bundle.getParcelableArrayList("Ingredients");
+            mStepsList = bundle.getParcelableArrayList("Steps");
+        }
+        //-------------------------------------
+        // set up fragment bundle..
+        //------------------------------------
+        Bundle args = new Bundle();
+        args.putString("RecipeName",mRecipeName);
+        args.putParcelableArrayList("Ingredients",mIngredientsList);
+        args.putParcelableArrayList("Steps",mStepsList);
+
+        //-------------------------------------
+        // Load up fragment 1..
+        //------------------------------------
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        IngredientsAndStepsFragment thefragment = new IngredientsAndStepsFragment();
+        thefragment.setArguments(args);
+
+        //step_container.removeAllViews();
+        fragmentManager.beginTransaction().add(R.id.ingredients_and_steps_container, thefragment).commit();
+
+        //-------------------------------------
+        // Load up fragment 2..
+        //------------------------------------
+        StepInstructionsFragment stepInstructionsFragment = new StepInstructionsFragment();
+        Bundle args2 = new Bundle();
+        StepParcelable p = mStepsList.get(0);
+        args2.putParcelable("Step",p);
+
+        step_container.removeAllViews();
+        stepInstructionsFragment.setArguments(args2);
+        fragmentManager.beginTransaction().add(R.id.video_and_step_container, stepInstructionsFragment).commit();
+
     }
 
 
     @Override
     public void onStepSelected(long recipeID, int StepID) {
+
+        // Enable Up navigation
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         //----------------------------------------------------------
         // Set up ObjectBox Boxstore..
@@ -62,7 +130,7 @@ public class IngredientsAndStepsActivity extends AppCompatActivity implements Fr
         //----------------------------------------------------------
         // Convert step object to one that implements Parcelable.
         //---------------------------------------------------------
-        Step_parc currentStep = new Step_parc();
+        StepParcelable currentStep = new StepParcelable();
         currentStep.id = step.id;
         currentStep.shortDescription = step.shortDescription;
         currentStep.videoURL = step.videoURL;
@@ -75,13 +143,13 @@ public class IngredientsAndStepsActivity extends AppCompatActivity implements Fr
         //---------------------------------------------------------
         if (mTwoPane){
             FragmentManager fragmentManager = getSupportFragmentManager();
-            Fragment_Step_Instructions fragment_step_instructions = new Fragment_Step_Instructions();
+            StepInstructionsFragment stepInstructionsFragment = new StepInstructionsFragment();
             Bundle args = new Bundle();
             args.putParcelable("Step",currentStep);
 
             step_container.removeAllViews();
-            fragment_step_instructions.setArguments(args);
-            fragmentManager.beginTransaction().add(R.id.video_and_step_container, fragment_step_instructions).commit();
+            stepInstructionsFragment.setArguments(args);
+            fragmentManager.beginTransaction().add(R.id.video_and_step_container, stepInstructionsFragment).commit();
 
        }else {
              Intent i = new Intent(this, InstructionStepsActivity.class);

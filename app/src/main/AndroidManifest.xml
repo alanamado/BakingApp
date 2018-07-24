@@ -30,9 +30,13 @@
                 android:resource="@xml/ingredients_widget_provider_info" />
         </receiver>
 
-        <activity android:name=".widget.ChooseRecipeForWidgetActivity" />
-        <activity android:name=".IngredientsAndStepsActivity" />
-        <activity android:name=".InstructionStepsActivity"></activity>
+        <activity android:name=".widget.ChooseRecipeForWidget" />
+        <activity android:name=".IngredientsAndStepsActivity"
+                  android:launchMode="singleTop"
+                  android:parentActivityName=".MainActivity"/>
+
+        <activity android:name=".InstructionStepsActivity"
+                  android:parentActivityName=".IngredientsAndStepsActivity"/>
     </application>
 
 </manifest>
