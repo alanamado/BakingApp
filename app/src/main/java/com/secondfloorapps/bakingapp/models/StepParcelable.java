@@ -3,7 +3,7 @@ package com.secondfloorapps.bakingapp.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Step_parc implements Parcelable {
+public class StepParcelable implements Parcelable {
 
     public long uniqueId;
     public int id;
@@ -13,9 +13,9 @@ public class Step_parc implements Parcelable {
     public String videoURL;
     public String thumbnailURL;
 
-    public Step_parc(){}
+    public StepParcelable(){}
 
-    public Step_parc(Parcel in) {
+    public StepParcelable(Parcel in) {
         uniqueId = in.readLong();
         id = in.readInt();
         recipeId = in.readLong();
@@ -42,15 +42,15 @@ public class Step_parc implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Step_parc> CREATOR = new Parcelable.Creator<Step_parc>() {
+    public static final Parcelable.Creator<StepParcelable> CREATOR = new Parcelable.Creator<StepParcelable>() {
         @Override
-        public Step_parc createFromParcel(Parcel in) {
-            return new Step_parc(in);
+        public StepParcelable createFromParcel(Parcel in) {
+            return new StepParcelable(in);
         }
 
         @Override
-        public Step_parc[] newArray(int size) {
-            return new Step_parc[size];
+        public StepParcelable[] newArray(int size) {
+            return new StepParcelable[size];
         }
     };
 

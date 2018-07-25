@@ -3,18 +3,18 @@ package com.secondfloorapps.bakingapp.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Ingredient_parc implements Parcelable {
+public class IngredientParcelable implements Parcelable {
     public long uniqueId;
     public long recipeId;
     public String quantity;
     public String measure;
     public String ingredient;
 
-    public Ingredient_parc(){
+    public IngredientParcelable(){
 
     }
 
-    public Ingredient_parc(Parcel in) {
+    public IngredientParcelable(Parcel in) {
         uniqueId = in.readLong();
         recipeId = in.readLong();
         quantity = in.readString();
@@ -37,15 +37,15 @@ public class Ingredient_parc implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Ingredient_parc> CREATOR = new Parcelable.Creator<Ingredient_parc>() {
+    public static final Parcelable.Creator<IngredientParcelable> CREATOR = new Parcelable.Creator<IngredientParcelable>() {
         @Override
-        public Ingredient_parc createFromParcel(Parcel in) {
-            return new Ingredient_parc(in);
+        public IngredientParcelable createFromParcel(Parcel in) {
+            return new IngredientParcelable(in);
         }
 
         @Override
-        public Ingredient_parc[] newArray(int size) {
-            return new Ingredient_parc[size];
+        public IngredientParcelable[] newArray(int size) {
+            return new IngredientParcelable[size];
         }
     };
 

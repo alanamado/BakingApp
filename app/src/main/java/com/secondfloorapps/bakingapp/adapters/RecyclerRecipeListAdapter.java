@@ -16,11 +16,11 @@ import com.secondfloorapps.bakingapp.MyApp;
 import com.secondfloorapps.bakingapp.R;
 import com.secondfloorapps.bakingapp.models.Ingredient;
 import com.secondfloorapps.bakingapp.models.Ingredient_;
-import com.secondfloorapps.bakingapp.models.Ingredient_parc;
+import com.secondfloorapps.bakingapp.models.IngredientParcelable;
 import com.secondfloorapps.bakingapp.models.Recipe;
 import com.secondfloorapps.bakingapp.models.Step;
 import com.secondfloorapps.bakingapp.models.Step_;
-import com.secondfloorapps.bakingapp.models.Step_parc;
+import com.secondfloorapps.bakingapp.models.StepParcelable;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -30,28 +30,28 @@ import java.util.List;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
-public class adapter_recycler_recipe_list extends RecyclerView.Adapter<adapter_recycler_recipe_list.MyViewHolder> {
+public class RecyclerRecipeListAdapter extends RecyclerView.Adapter<RecyclerRecipeListAdapter.MyViewHolder> {
 
     //--------------------------------------------
     // Variables
     //--------------------------------------------
-    private final List<Recipe> recipeList;
+    private final List<Recipe> mRecipeList;
 
     //--------------------------------------------
     // Constructor..
     //--------------------------------------------
-    public adapter_recycler_recipe_list(List<Recipe> recipes){ recipeList = recipes; }
+    public RecyclerRecipeListAdapter(List<Recipe> recipes){ mRecipeList = recipes; }
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        final TextView recipeName;
-        final ImageView recipeImage;
+        TextView mRecipeName;
+        ImageView mRecipeImage;
 
         private MyViewHolder(View view) {
             super(view);
-            recipeName = view.findViewById(R.id.tvRecipeName);
-            recipeImage = view.findViewById(R.id.imRecipeImage);
+            mRecipeName = view.findViewById(R.id.tvRecipeName);
+            mRecipeImage = view.findViewById(R.id.imRecipeImage);
         }
     }
 
@@ -69,11 +69,11 @@ public class adapter_recycler_recipe_list extends RecyclerView.Adapter<adapter_r
 
         final Recipe currentRecipe;
         final Context context = holder.itemView.getContext();
-        final ArrayList<Ingredient_parc> ingredient_parcs;
-        final ArrayList<Step_parc> step_parcs;
+        final ArrayList<IngredientParcelable> ingredientParcelable;
+        final ArrayList<StepParcelable> stepParcelable;
         final MyViewHolder myHolder = holder;
 
-        currentRecipe = recipeList.get(position);
+        currentRecipe = mRecipeList.get(position);
 
         //---------------------------------------------------------------
         // Set up the ObjectBox Boxstore(s)..
@@ -92,22 +92,22 @@ public class adapter_recycler_recipe_list extends RecyclerView.Adapter<adapter_r
         //---------------------------------------------------------------
         // convert my models to models that work with Parcelable, since the ones decorated with ObjectBox annotations don't work with Parcelable well..
         //---------------------------------------------------------------
-        ingredient_parcs = returnParcelableVersionOfIngredients(ingredients) ;
-        step_parcs = returnParcelableVersionOfSteps(steps);
+        ingredientParcelable = returnParcelableVersionOfIngredients(ingredients) ;
+        stepParcelable = returnParcelableVersionOfSteps(steps);
 
         //---------------------------------------------------------------
         // set my holder field values..
         //-------------------------------
-        myHolder.recipeName.setText(currentRecipe.name);
+        myHolder.mRecipeName.setText(currentRecipe.name);
 
         //---------------------------------------------------------------
         // Use Picasso to load image from the web into the imageview..
         //---------------------------------------------------------------
        try {
            Picasso.get()
-                   .load(recipeList.get(position).image)
+                   .load(mRecipeList.get(position).image)
                    .placeholder(R.drawable.ic_ingredients)
-                   .into(myHolder.recipeImage, new Callback() {
+                   .into(myHolder.mRecipeImage, new Callback() {
                        @Override
                        public void onSuccess() {
                        }
@@ -119,7 +119,7 @@ public class adapter_recycler_recipe_list extends RecyclerView.Adapter<adapter_r
                    });
        }catch(IllegalArgumentException e)
        {
-           myHolder.recipeImage.setImageResource(R.drawable.ic_ingredients);
+           myHolder.mRecipeImage.setImageResource(R.drawable.ic_ingredients);
        }
 
 
@@ -133,8 +133,8 @@ public class adapter_recycler_recipe_list extends RecyclerView.Adapter<adapter_r
 
                 Intent i = new Intent(context, IngredientsAndStepsActivity.class);
                 i.putExtra("RecipeName",currentRecipe.name);
-                i.putParcelableArrayListExtra("Ingredients", ingredient_parcs);
-                i.putParcelableArrayListExtra("Steps", step_parcs);
+                i.putParcelableArrayListExtra("Ingredients", ingredientParcelable);
+                i.putParcelableArrayListExtra("Steps", stepParcelable);
 
                 context.startActivity(i);  // Call the Ingredients and Steps activity.
             }
@@ -144,33 +144,33 @@ public class adapter_recycler_recipe_list extends RecyclerView.Adapter<adapter_r
 
     @Override
     public int getItemCount() {
-        return recipeList.size();
+        return mRecipeList.size();
     }
 
-    public ArrayList<Ingredient_parc> returnParcelableVersionOfIngredients(List<Ingredient> ingredients)
+    public ArrayList<IngredientParcelable> returnParcelableVersionOfIngredients(List<Ingredient> ingredients)
     {
-        ArrayList<Ingredient_parc> ingredient_parcs = new ArrayList<>();
+        ArrayList<IngredientParcelable> ingredientParcelablesList = new ArrayList<>();
 
         for (Ingredient i: ingredients) {
-            Ingredient_parc ingredient_parc = new Ingredient_parc();
-            ingredient_parc.uniqueId = i.uniqueId;
-            ingredient_parc.ingredient = i.ingredient;
-            ingredient_parc.measure = i.measure;
-            ingredient_parc.quantity = i.quantity;
-            ingredient_parc.recipeId = i.recipeId;
+            IngredientParcelable ingredientParcelable = new IngredientParcelable();
+            ingredientParcelable.uniqueId = i.uniqueId;
+            ingredientParcelable.ingredient = i.ingredient;
+            ingredientParcelable.measure = i.measure;
+            ingredientParcelable.quantity = i.quantity;
+            ingredientParcelable.recipeId = i.recipeId;
 
-            ingredient_parcs.add(ingredient_parc);
+            ingredientParcelablesList.add(ingredientParcelable);
         }
 
-        return ingredient_parcs;
+        return ingredientParcelablesList;
     }
 
-    public ArrayList<Step_parc> returnParcelableVersionOfSteps(List<Step> steps)
+    public ArrayList<StepParcelable> returnParcelableVersionOfSteps(List<Step> steps)
     {
-        ArrayList<Step_parc> Step_parcs = new ArrayList<>();
+        ArrayList<StepParcelable> stepParcelablesList = new ArrayList<>();
 
         for (Step s: steps) {
-            Step_parc steps_parc = new Step_parc();
+            StepParcelable steps_parc = new StepParcelable();
             steps_parc.uniqueId = s.uniqueId;
             steps_parc.id = s.id;
             steps_parc.shortDescription = s.shortDescription;
@@ -179,10 +179,10 @@ public class adapter_recycler_recipe_list extends RecyclerView.Adapter<adapter_r
             steps_parc.videoURL = s.videoURL;
             steps_parc.recipeId = s.recipeId;
 
-            Step_parcs.add(steps_parc);
+            stepParcelablesList.add(steps_parc);
         }
 
-        return Step_parcs;
+        return stepParcelablesList;
     }
 
 }

@@ -7,20 +7,20 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -41,33 +41,39 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.secondfloorapps.bakingapp.R;
-import com.secondfloorapps.bakingapp.models.Step_parc;
+import com.secondfloorapps.bakingapp.models.StepParcelable;
 
-public class Fragment_Step_Instructions extends Fragment implements ExoPlayer.EventListener {
+public class StepInstructionsFragment extends Fragment implements ExoPlayer.EventListener {
 
     Context context;
-    Step_parc currentStep;
+    StepParcelable currentStep;
     TextView instructions;
     SimpleExoPlayer mExoPlayer;
     SimpleExoPlayerView mPlayerView;
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
-    private static final String TAG = Fragment_Step_Instructions.class.getSimpleName();
+    private static final String TAG = StepInstructionsFragment.class.getSimpleName();
     TextView lbInstructions;
-
-
+    String videoUrl;
+  //  private static final String TAG = "Fragment";
+    long playerPosition = C.TIME_UNSET;
+    boolean isPlayWhenReady = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(savedInstanceState != null) {
+            playerPosition = savedInstanceState.getLong("PlayerPosition");
+            isPlayWhenReady = savedInstanceState.getBoolean("IsPlayWhenReady");
+        }
 
+        Log.i(TAG,"onCreate");
         Bundle bundle = this.getArguments();
         if (bundle != null)
         {
             currentStep = bundle.getParcelable("Step");
         }
-
 
     }
 
@@ -76,7 +82,9 @@ public class Fragment_Step_Instructions extends Fragment implements ExoPlayer.Ev
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
+        Log.i(TAG,"onCreateView");
         final View rootView = inflater.inflate(R.layout.fragment_video_and_instructions, container,false);
+
 
         context = getContext();
 
@@ -97,15 +105,20 @@ public class Fragment_Step_Instructions extends Fragment implements ExoPlayer.Ev
         {
             lbInstructions.setText("");
         }
-        String videoUrl = currentStep.videoURL;
+
+        // set the video url
+        videoUrl = currentStep.videoURL;
 
         // Initialize the Media Session.
         initializeMediaSession();
 
 
         // Exo player
+
         if (videoUrl != null && videoUrl.trim().length() !=0) {
+            //if (mExoPlayer == null) {
             initializePlayer(Uri.parse(videoUrl));
+            //}
         }else
         {
             mPlayerView.setVisibility(View.GONE);
@@ -121,7 +134,7 @@ public class Fragment_Step_Instructions extends Fragment implements ExoPlayer.Ev
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_FULLSCREEN);
 
-         }
+        }
 
 
 
@@ -130,10 +143,31 @@ public class Fragment_Step_Instructions extends Fragment implements ExoPlayer.Ev
 
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG,"onResume");
+        if (videoUrl != null)
+            initializePlayer(Uri.parse(videoUrl));
+    }
+
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.i(TAG,"onSaveInstanceState (destroy)");
+        if(mExoPlayer!=null) {
+            outState.putLong("PlayerPosition", mExoPlayer.getCurrentPosition());
+            outState.putBoolean("IsPlayWhenReady", mExoPlayer.getPlayWhenReady());
+        }
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         releasePlayer();
+        Log.i(TAG,"onStop (destroy)");
     }
+
 
     private void initializeMediaSession() {
 
@@ -183,8 +217,12 @@ public class Fragment_Step_Instructions extends Fragment implements ExoPlayer.Ev
             DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_video");
             ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, dataSourceFactory,extractorsFactory,null,null);
+            mExoPlayer.getCurrentPosition();
+            if (playerPosition != C.TIME_UNSET) {
+                mExoPlayer.seekTo(playerPosition);
+            }
             mExoPlayer.prepare(mediaSource);
-            //mExoPlayer.setPlayWhenReady(true);
+            mExoPlayer.setPlayWhenReady(isPlayWhenReady);
         }
     }
 

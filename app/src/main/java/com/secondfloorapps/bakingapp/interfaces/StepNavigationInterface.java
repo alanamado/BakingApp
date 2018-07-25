@@ -1,6 +1,6 @@
 package com.secondfloorapps.bakingapp.interfaces;
 
-public interface interface_for_step_navigation {
+public interface StepNavigationInterface {
 
     void navigatePrevious();
     void navigateNext();

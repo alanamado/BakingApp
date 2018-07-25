@@ -26,16 +26,24 @@ public class InstructionStepsActivity extends AppCompatActivity implements StepN
     FragmentManager fragmentManager ;
     long mCurrentRecipeID;
     int mCurrentStepID;
-    StepInstructionsFragment step_instructions;
-    StepNavigationFragment step_navigation;
+    StepParcelable mCurrentStep;
+    StepInstructionsFragment mStepInstructionsFragment;
+    StepNavigationFragment mStepNavigationFragment;
 
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //Save the fragment's instance
-        getSupportFragmentManager().putFragment(outState, "instruction_fragment", step_instructions);
-         getSupportFragmentManager().putFragment(outState, "navigation_fragment", step_navigation);
+        if (mStepInstructionsFragment != null) {
+            getSupportFragmentManager().putFragment(outState, "instruction_fragment", mStepInstructionsFragment);
+          }
+        if (mStepNavigationFragment != null) {
+            getSupportFragmentManager().putFragment(outState, "navigation_fragment", mStepNavigationFragment);
+        }
+        outState.putLong("mCurrentRecipeID",mCurrentRecipeID);
+        outState.putInt("mCurrentStepID",mCurrentStepID);
+        outState.putParcelable("mCurrentStep",mCurrentStep);
     }
 
     @Override
@@ -47,12 +55,6 @@ public class InstructionStepsActivity extends AppCompatActivity implements StepN
         // Enable Up navigation
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (savedInstanceState != null) {
-            //Restore the fragment's instance
-            step_instructions = (StepInstructionsFragment) getSupportFragmentManager().getFragment(savedInstanceState, "instruction_fragment");
-            step_navigation = (StepNavigationFragment) getSupportFragmentManager().getFragment(savedInstanceState, "navigation_fragment");
-        }
-
         //----------------------------------------------------------
         // Reference ObjectBox boxstore..
         //---------------------------------------------------------
@@ -60,20 +62,41 @@ public class InstructionStepsActivity extends AppCompatActivity implements StepN
         MyApp myApp = (MyApp) this.getApplicationContext();
         boxStore = myApp.getBoxStore();
 
-        //----------------------------------------------------------
-        // Set up stepbox..
-        //---------------------------------------------------------
-        stepBox = boxStore.boxFor(Step.class);
+
+        if (savedInstanceState != null) {
+            //Restore the fragment's instance
+            mStepInstructionsFragment = (StepInstructionsFragment) getSupportFragmentManager().getFragment(savedInstanceState, "instruction_fragment");
+            mStepNavigationFragment = (StepNavigationFragment) getSupportFragmentManager().getFragment(savedInstanceState, "navigation_fragment");
+            mCurrentRecipeID = savedInstanceState.getLong("mCurrentRecipeID");
+            mCurrentStepID = savedInstanceState.getInt("mCurrentStepID");
+            mCurrentStep = savedInstanceState.getParcelable("mCurrentStep");
+        }else
+        {
+            //-----------------------------------------------------
+            // Get retrieve Step from Extra passed with this intent.
+            //-----------------------------------------------------
+            Intent i = getIntent();
+            mCurrentStep = i.getParcelableExtra("Step");
+            mCurrentRecipeID = mCurrentStep.recipeId;
+            mCurrentStepID  = mCurrentStep.id;
+
+            //----------------------------------------------------------
+            // Set up stepbox..
+            //---------------------------------------------------------
+            stepBox = boxStore.boxFor(Step.class);
+            Step currentStep = stepBox.query().equal(Step_.recipeId, this.mCurrentRecipeID).equal(Step_.id, this.mCurrentStepID).build().findFirst();
+
+            StepParcelable mCurrentStepID = new StepParcelable();
+            mCurrentStepID.recipeId = currentStep.recipeId;
+            mCurrentStepID.id = currentStep.id;
+            mCurrentStepID.description = currentStep.description;
+            mCurrentStepID.thumbnailURL = currentStep.thumbnailURL;
+            mCurrentStepID.videoURL = currentStep.videoURL;
+            mCurrentStepID.shortDescription = currentStep.shortDescription;
+            mCurrentStepID.uniqueId = currentStep.uniqueId;
+        }
 
 
-        //-----------------------------------------------------
-        // Get retrieve Step from Extra passed with this intent.
-        //-----------------------------------------------------
-        Intent i = getIntent();
-        StepParcelable currentStep = i.getParcelableExtra("Step");
-
-        mCurrentRecipeID = currentStep.recipeId;
-        mCurrentStepID  = currentStep.id;
 
 
         // Set up fragment manager..
@@ -81,23 +104,23 @@ public class InstructionStepsActivity extends AppCompatActivity implements StepN
 
         // Set up bundle
         Bundle args =  new Bundle();
-        args.putParcelable("Step",currentStep);
+        args.putParcelable("Step",mCurrentStep);
 
         //---------------------------------------------------------------------------------------------------
         // Add the bundle to the  Step_Instructions fragment and then add the fragment to it's container
         //--------------------------------------------------------------------------------------------------
-        if (step_navigation == null) {
-            step_instructions = new StepInstructionsFragment();
-            step_instructions.setArguments(args);
+        if (mStepInstructionsFragment == null) {
+            mStepInstructionsFragment = new StepInstructionsFragment();
+            mStepInstructionsFragment.setArguments(args);
 
             // load up the steps fragment into the Framelayout that was set up for it in this activity's layout
             fragmentManager.beginTransaction()
-                    .add(R.id.instructions_container, step_instructions, "instruction_fragment")
+                    .add(R.id.instructions_container, mStepInstructionsFragment, "instruction_fragment")
                     .commit();
         }else{
             // load up the steps fragment into the Framelayout that was set up for it in this activity's layout
             fragmentManager.beginTransaction()
-                    .replace(R.id.instructions_container, step_instructions, "instruction_fragment")
+                    .replace(R.id.instructions_container, mStepInstructionsFragment, "instruction_fragment")
                     .commit();
         }
         //-----------------------------------------------------
@@ -109,13 +132,13 @@ public class InstructionStepsActivity extends AppCompatActivity implements StepN
             //---------------------------------------------------------------------------------------------------
             // Add the bundle to the  Step_Instructions fragment and then add the fragment to it's container
             //--------------------------------------------------------------------------------------------------
-            if (step_navigation == null) {
-                step_navigation = new StepNavigationFragment();
-                step_navigation.setArguments(args);
+            if (mStepNavigationFragment == null) {
+                mStepNavigationFragment = new StepNavigationFragment();
+                mStepNavigationFragment.setArguments(args);
 
                 // load up the navigation fragment into the Framelayout that was set up for it in this activity's layout
                 fragmentManager.beginTransaction()
-                        .add(R.id.navigation_container,step_navigation,"navigation_fragment")
+                        .add(R.id.navigation_container,mStepNavigationFragment,"navigation_fragment")
                         .commit();
 
             }else{
@@ -123,7 +146,7 @@ public class InstructionStepsActivity extends AppCompatActivity implements StepN
 
                 // load up the navigation fragment into the Framelayout that was set up for it in this activity's layout
                 fragmentManager.beginTransaction()
-                        .replace(R.id.navigation_container,step_navigation,"navigation_fragment")
+                        .replace(R.id.navigation_container,mStepNavigationFragment,"navigation_fragment")
                         .commit();
             }
 
@@ -137,14 +160,13 @@ public class InstructionStepsActivity extends AppCompatActivity implements StepN
         // Retrieve previous Step from the database if it exists..
         //---------------------------------------------------------
         if (this.mCurrentStepID != 0) {
-            int previousStepId = this.mCurrentStepID - 1;
+            int previousStepId = mCurrentStep.id - 1;
+            stepBox = boxStore.boxFor(Step.class);
             Step previousStep = stepBox.query().equal(Step_.recipeId, this.mCurrentRecipeID).equal(Step_.id, previousStepId).build().findFirst();
             StepParcelable previousStepParcelable;  // parcelable version of model.
 
             if (previousStep != null){
 
-                this.mCurrentRecipeID = previousStep.recipeId;
-                this.mCurrentStepID = previousStep.id;
 
                 previousStepParcelable =  new StepParcelable();
                 previousStepParcelable.recipeId = previousStep.recipeId;
@@ -155,21 +177,24 @@ public class InstructionStepsActivity extends AppCompatActivity implements StepN
                 previousStepParcelable.shortDescription = previousStep.shortDescription;
                 previousStepParcelable.uniqueId = previousStep.uniqueId;
 
+                this.mCurrentRecipeID = previousStep.recipeId;
+                this.mCurrentStepID = previousStep.id;
+                this.mCurrentStep = previousStepParcelable;
 
                 // Set up bundle
                 Bundle args =  new Bundle();
-                args.putParcelable("Step", previousStepParcelable);
+                args.putParcelable("Step", mCurrentStep);
 
                 //---------------------------------------------------------------------------------------------------
                 // Add the bundle to the  Step_Instructions fragment and then add the fragment to it's container
                 //--------------------------------------------------------------------------------------------------
-                StepInstructionsFragment step_instructions = new StepInstructionsFragment();
-                step_instructions.setArguments(args);
+                mStepInstructionsFragment = new StepInstructionsFragment();
+                mStepInstructionsFragment.setArguments(args);
 
 
                 // load up the steps fragment into the Framelayout that was set up for it in this activity's layout
                 fragmentManager.beginTransaction()
-                        .replace(R.id.instructions_container,step_instructions,"instruction_fragment")
+                        .replace(R.id.instructions_container,mStepInstructionsFragment,"instruction_fragment")
                         .commit();
             }
         }
@@ -180,18 +205,16 @@ public class InstructionStepsActivity extends AppCompatActivity implements StepN
     @Override
     public void navigateNext() {
 
-        Toast.makeText(this,"next button clicked",Toast.LENGTH_SHORT).show();
         //----------------------------------------------------------
         // Retrieve previous Step from the database if it exists..
         //---------------------------------------------------------
-            int nextStepId = this.mCurrentStepID + 1;
+            int nextStepId = this.mCurrentStep.id + 1;
+            stepBox = boxStore.boxFor(Step.class);
             Step nextStep = stepBox.query().equal(Step_.recipeId, this.mCurrentRecipeID).equal(Step_.id, nextStepId).build().findFirst();
             StepParcelable nextStepParcelable;  // parcelable version of model.
 
             if (nextStep != null){
-
-                this.mCurrentRecipeID = nextStep.recipeId;
-                this.mCurrentStepID = nextStep.id;
+               // Toast.makeText(this,"next button clicked",Toast.LENGTH_SHORT).show();
 
                 nextStepParcelable =  new StepParcelable();
                 nextStepParcelable.recipeId = nextStep.recipeId;
@@ -202,21 +225,24 @@ public class InstructionStepsActivity extends AppCompatActivity implements StepN
                 nextStepParcelable.shortDescription = nextStep.shortDescription;
                 nextStepParcelable.uniqueId = nextStep.uniqueId;
 
+                this.mCurrentRecipeID = nextStep.recipeId;
+                this.mCurrentStepID = nextStep.id;
+                this.mCurrentStep = nextStepParcelable;
 
                 // Set up bundle
                 Bundle args =  new Bundle();
-                args.putParcelable("Step", nextStepParcelable);
+                args.putParcelable("Step", mCurrentStep);
 
                 //---------------------------------------------------------------------------------------------------
                 // Add the bundle to the  Step_Instructions fragment and then add the fragment to it's container
                 //--------------------------------------------------------------------------------------------------
-                StepInstructionsFragment step_instructions = new StepInstructionsFragment();
-                step_instructions.setArguments(args);
+                mStepInstructionsFragment = new StepInstructionsFragment();
+                mStepInstructionsFragment.setArguments(args);
 
 
                 // load up the steps fragment into the Framelayout that was set up for it in this activity's layout
                 fragmentManager.beginTransaction()
-                        .replace(R.id.instructions_container,step_instructions,"instruction_fragment")
+                        .replace(R.id.instructions_container,mStepInstructionsFragment,"instruction_fragment")
                         .commit();
             }
 

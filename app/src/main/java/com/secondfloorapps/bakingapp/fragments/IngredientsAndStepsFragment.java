@@ -1,27 +1,25 @@
 package com.secondfloorapps.bakingapp.fragments;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.secondfloorapps.bakingapp.R;
-import com.secondfloorapps.bakingapp.adapters.adapter_recycler_ingredients;
-import com.secondfloorapps.bakingapp.adapters.adapter_recycler_steps;
-import com.secondfloorapps.bakingapp.models.Ingredient_parc;
-import com.secondfloorapps.bakingapp.models.Step_parc;
+import com.secondfloorapps.bakingapp.adapters.RecyclerIngredientsAdapter;
+import com.secondfloorapps.bakingapp.adapters.RecyclerStepsAdapter;
+import com.secondfloorapps.bakingapp.models.IngredientParcelable;
+import com.secondfloorapps.bakingapp.models.StepParcelable;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class Fragment_Ingredients_And_Steps extends Fragment {
+public class IngredientsAndStepsFragment extends Fragment {
 
     RecyclerView recyclerIngredients;
     RecyclerView recyclerSteps;
@@ -31,11 +29,11 @@ public class Fragment_Ingredients_And_Steps extends Fragment {
     Context activity;
     LinearLayoutManager linearLayoutManager_ingredients;
     LinearLayoutManager linearLayoutManager_steps;
-    adapter_recycler_ingredients adapterIngredients;
-    adapter_recycler_steps adapterSteps;
+    RecyclerIngredientsAdapter adapterIngredients;
+    RecyclerStepsAdapter adapterSteps;
 
-    ArrayList<Ingredient_parc> mIngredientsList;
-    ArrayList<Step_parc> mStepsList;
+    ArrayList<IngredientParcelable> mIngredientsList;
+    ArrayList<StepParcelable> mStepsList;
 
     OnStepClickListener mCallback;
 
@@ -47,12 +45,21 @@ public class Fragment_Ingredients_And_Steps extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+//        Bundle bundle = getActivity().getIntent().getExtras();
+//
+//        mRecipeName = bundle.getString("RecipeName");
+//        mIngredientsList = bundle.getParcelableArrayList("Ingredients");
+//        mStepsList = bundle.getParcelableArrayList("Steps");
 
-        Bundle bundle = getActivity().getIntent().getExtras();
-
-        mRecipeName = bundle.getString("RecipeName");
-        mIngredientsList = bundle.getParcelableArrayList("Ingredients");
-        mStepsList = bundle.getParcelableArrayList("Steps");
+        //-----------------------
+        Bundle bundle = this.getArguments();
+        if (bundle != null)
+        {
+            mRecipeName = bundle.getString("RecipeName");
+            mIngredientsList = bundle.getParcelableArrayList("Ingredients");
+            mStepsList = bundle.getParcelableArrayList("Steps");
+        }
+        //---------------------------
 
         activity = getActivity();
     }
@@ -63,8 +70,8 @@ public class Fragment_Ingredients_And_Steps extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_ingredients_and_steps_list, container,false);
 
         // adapters
-        adapterIngredients = new adapter_recycler_ingredients(mIngredientsList);
-        adapterSteps = new adapter_recycler_steps(activity, mStepsList);
+        adapterIngredients = new RecyclerIngredientsAdapter(mIngredientsList);
+        adapterSteps = new RecyclerStepsAdapter(activity, mStepsList);
 
         // references
         lbIngredients = rootView.findViewById(R.id.lbIngredients);

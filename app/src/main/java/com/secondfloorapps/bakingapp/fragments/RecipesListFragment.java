@@ -14,19 +14,18 @@ import android.view.ViewGroup;
 
 import com.secondfloorapps.bakingapp.MyApp;
 import com.secondfloorapps.bakingapp.R;
-import com.secondfloorapps.bakingapp.SimpleIdlingResource;
-import com.secondfloorapps.bakingapp.adapters.adapter_recycler_recipe_list;
+import com.secondfloorapps.bakingapp.adapters.RecyclerRecipeListAdapter;
 import com.secondfloorapps.bakingapp.models.Recipe;
 
 import java.util.List;
 
 import io.objectbox.BoxStore;
 
-public class Fragment_RecipesList extends Fragment {
+public class RecipesListFragment extends Fragment {
 
     RecyclerView recyclerView;
     Context context;
-    adapter_recycler_recipe_list adapter;
+    RecyclerRecipeListAdapter adapter;
     List<Recipe> recipeList;
     GridLayoutManager gridLayoutManager;
 
@@ -56,7 +55,7 @@ public class Fragment_RecipesList extends Fragment {
         //-----------------------------------------------------
         // Set up recyclerview..
         //-----------------------------------------------------
-        adapter = new adapter_recycler_recipe_list(recipeList);
+        adapter = new RecyclerRecipeListAdapter(recipeList);
         recyclerView.setAdapter(adapter);
 
         //-----------------------------------------------------

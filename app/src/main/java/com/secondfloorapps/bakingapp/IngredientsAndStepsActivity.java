@@ -48,6 +48,10 @@ public class IngredientsAndStepsActivity extends AppCompatActivity implements In
         setContentView(R.layout.activity_ingredients_and_steps);
        // ingredientsAndStepsFragment_Container = findViewById(R.id.IngredientsAndSteps_Container);
 
+        // Enable Up navigation
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         MyApp myApp = (MyApp) this.getApplicationContext();
         boxStore = myApp.getBoxStore();
 
@@ -98,15 +102,16 @@ public class IngredientsAndStepsActivity extends AppCompatActivity implements In
         //-------------------------------------
         // Load up fragment 2..
         //------------------------------------
-        StepInstructionsFragment stepInstructionsFragment = new StepInstructionsFragment();
-        Bundle args2 = new Bundle();
-        StepParcelable p = mStepsList.get(0);
-        args2.putParcelable("Step",p);
+        if (mTwoPane) {
+            StepInstructionsFragment stepInstructionsFragment = new StepInstructionsFragment();
+            Bundle args2 = new Bundle();
+            StepParcelable p = mStepsList.get(0);
+            args2.putParcelable("Step", p);
 
-        step_container.removeAllViews();
-        stepInstructionsFragment.setArguments(args2);
-        fragmentManager.beginTransaction().add(R.id.video_and_step_container, stepInstructionsFragment).commit();
-
+            step_container.removeAllViews();
+            stepInstructionsFragment.setArguments(args2);
+            fragmentManager.beginTransaction().add(R.id.video_and_step_container, stepInstructionsFragment).commit();
+        }
     }
 
 

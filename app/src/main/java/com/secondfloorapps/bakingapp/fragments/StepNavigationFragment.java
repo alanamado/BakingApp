@@ -9,15 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.secondfloorapps.bakingapp.R;
-import com.secondfloorapps.bakingapp.interfaces.interface_for_step_navigation;
-import com.secondfloorapps.bakingapp.models.Step_parc;
+import com.secondfloorapps.bakingapp.interfaces.StepNavigationInterface;
+import com.secondfloorapps.bakingapp.models.StepParcelable;
 
-public class Fragment_Step_Navigation extends Fragment {
+public class StepNavigationFragment extends Fragment {
 
-    Step_parc currentStep;
+    StepParcelable currentStep;
     Button btNextStep;
     Button btPreviousStep;
     Context activity;
@@ -50,7 +49,7 @@ public class Fragment_Step_Navigation extends Fragment {
         btPreviousStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                interface_for_step_navigation step_navigation = (interface_for_step_navigation) activity;
+                StepNavigationInterface step_navigation = (StepNavigationInterface) activity;
                 step_navigation.navigatePrevious();
              //  Toast.makeText(context,"Next button clicked",Toast.LENGTH_SHORT).show();
             }
@@ -62,7 +61,7 @@ public class Fragment_Step_Navigation extends Fragment {
         btNextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                interface_for_step_navigation step_navigation = (interface_for_step_navigation) activity;
+                StepNavigationInterface step_navigation = (StepNavigationInterface) activity;
                 step_navigation.navigateNext();
                // Toast.makeText(context,"Previous button clicked",Toast.LENGTH_SHORT).show();
             }

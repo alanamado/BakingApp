@@ -7,40 +7,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.secondfloorapps.bakingapp.R;
-import com.secondfloorapps.bakingapp.models.Ingredient;
-import com.secondfloorapps.bakingapp.models.Ingredient_parc;
-import com.secondfloorapps.bakingapp.models.Step_parc;
+import com.secondfloorapps.bakingapp.models.IngredientParcelable;
 
 import java.util.List;
 
-public class adapter_recycler_ingredients extends RecyclerView.Adapter<adapter_recycler_ingredients.MyViewHolder> {
+public class RecyclerIngredientsAdapter extends RecyclerView.Adapter<RecyclerIngredientsAdapter.MyViewHolder> {
 
     //--------------------------------------------
     // Variables
     //--------------------------------------------
-    private final List<Ingredient_parc>  ingredientsList;
+    private final List<IngredientParcelable>  ingredientsList;
 
     //--------------------------------------------
     // Constructor..
     //--------------------------------------------
-    public adapter_recycler_ingredients(List<Ingredient_parc> ingredients){ ingredientsList = ingredients; }
+    public RecyclerIngredientsAdapter(List<IngredientParcelable> ingredients){ ingredientsList = ingredients; }
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        final TextView ingredient;
-        final TextView quantity;
-        final TextView measure;
+        TextView mIngredient;
+        TextView mQuantity;
+        TextView mMeasure;
 
 
         private MyViewHolder(View view) {
             super(view);
-            ingredient = view.findViewById(R.id.tvIngredient);
-            quantity = view.findViewById(R.id.tvQuantity);
-            measure = view.findViewById(R.id.tvMeasure);
+            mIngredient = view.findViewById(R.id.tvIngredient);
+            mQuantity = view.findViewById(R.id.tvQuantity);
+            mMeasure = view.findViewById(R.id.tvMeasure);
         }
     }
 
@@ -56,31 +53,14 @@ public class adapter_recycler_ingredients extends RecyclerView.Adapter<adapter_r
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        final Ingredient_parc currentIngredient;
-        final Context context = holder.itemView.getContext();
+        IngredientParcelable mCurrentIngredient;
 
-        currentIngredient = ingredientsList.get(position);
+        mCurrentIngredient = ingredientsList.get(position);
 
+        holder.mIngredient.setText(mCurrentIngredient.ingredient);
+        holder.mQuantity.setText(mCurrentIngredient.quantity);
+        holder.mMeasure.setText(mCurrentIngredient.measure);
 
-        holder.ingredient.setText(currentIngredient.ingredient);
-        holder.quantity.setText(currentIngredient.quantity);
-        holder.measure.setText(currentIngredient.measure);
-
-
-        //---------------------------------------------------------------
-        // Set up an onclick listener for each Ingredient..
-        //---------------------------------------------------------------
-//        holder.itemView.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Intent i = new Intent(activity, MovieDetailsActivity.class);
-//                i.putExtra("Movie", currentMovie);
-//                Toast.makeText(context, "Item clicked on", Toast.LENGTH_SHORT).show();
-//            }
-//
-//        });
 
     }
 

@@ -1,6 +1,6 @@
 package com.secondfloorapps.bakingapp.interfaces;
 
-public interface interface_widget_recipe_chooser {
+public interface WidgetRecipeChooserInterface {
 
     void acceptResult(int result);
 }
